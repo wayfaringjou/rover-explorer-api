@@ -5,11 +5,15 @@ const cors = require('cors');
 const helmet = require('helmet');
 const { NODE_ENV, CLIENT_ORIGIN } = require('../config');
 
+// Routes
+const roversRouter = require('./routes/rovers/rovers.router');
+
 const app = express();
 
 app.use(logger((NODE_ENV === 'production') ? 'common' : 'common', {
   skip: () => NODE_ENV === 'test',
 }));
+
 app.use(cors({
   origin: CLIENT_ORIGIN,
 }));
@@ -20,6 +24,11 @@ app.use(express.json());
 app.all('/', (req, res) => {
   res.send('Hello Explorer!');
 });
+
+app.use('/api/rovers/:roverId', (req, res, _next) => {
+  res.locals.roverId = req.params.roverId;
+  _next();
+}, roversRouter);
 
 app.use((req, res, _next) => {
   res.status(404).send('Not Found');

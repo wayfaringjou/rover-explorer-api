@@ -7,7 +7,7 @@
   },
   "globals": {
     "expect": "readonly",
-    "supertest": "readonly"
+    "request": "readonly"
   },
   "extends": ["airbnb-base"],
   "parserOptions": {
