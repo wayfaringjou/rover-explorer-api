@@ -55,14 +55,34 @@ const rover = ({ name = '', activeCameras = [] } = {}) => ({
 
 // Set of active cameras for all rovers
 const camSetCommon = ['fhaz', 'rhaz', 'navcam'];
+
 // Opportunity and Spirit share camera set, Curiosity has another set
 const camSet1 = [...camSetCommon, 'pancam', 'minites'];
 const camSet2 = [...camSetCommon, 'mast', 'chemcam', 'mahli', 'mardi'];
+
+// Perseverance has a different set of cameras
+const camSet3 = [
+  'EDL_RUCAM',
+  'EDL_DDCAM',
+  'EDL_PUCAM1',
+  'EDL_PUCAM2',
+  'NAVCAM_LEFT',
+  'NAVCAM_RIGHT',
+  'MCZ_RIGHT',
+  'MCZ_LEFT',
+  'FRONT_HAZCAM_LEFT_A',
+  'FRONT_HAZCAM_RIGHT_A',
+  'REAR_HAZCAM_LEFT',
+  'REAR_HAZCAM_RIGHT',
+  'EDL_RDCAM',
+  'SKYCAM',
+  'SHERLOC_WATSON'];
 
 const activeRovers = {
   opportunity: rover({ name: 'opportunity', activeCameras: camSet1 }),
   spirit: rover({ name: 'spirit', activeCameras: camSet1 }),
   curiosity: rover({ name: 'curiosity', activeCameras: camSet2 }),
+  perseverance: rover({ name: 'perseverance', activeCameras: camSet3 }),
 };
 
 module.exports = activeRovers;
