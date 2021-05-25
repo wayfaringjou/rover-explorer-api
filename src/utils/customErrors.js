@@ -19,8 +19,8 @@ class PropertiesError extends Error {
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, PropertiesError);
     }
-    this.name = 'MissingPropertiesError';
-    this.inactiveCamera = properties;
+    this.name = 'PropertiesError';
+    this.properties = properties;
   }
 }
 

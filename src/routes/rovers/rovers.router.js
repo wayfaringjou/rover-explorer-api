@@ -1,27 +1,24 @@
 const express = require('express');
-const rover = require('./rovers.service');
-
-const setActive = (cams = []) => cams.reduce((acc, curr) => ({ ...acc, [curr]: true }), {});
-
-// Set of active cameras for all rovers
-const camCommon = setActive(['fhaz', 'rhaz', 'navcam']);
-// Opportunity and Spirit share camera set, Curiosity has another set
-const camSet1 = { ...camCommon, ...setActive(['pancam', 'minites']) };
-const camSet2 = { ...camCommon, ...setActive(['mast', 'chemcam', 'mahli', 'mardi']) };
-
-const rovers = {
-  opportunity: rover({ name: 'opportunity', activeCameras: camSet1 }),
-  spirit: rover({ name: 'spirit', activeCameras: camSet1 }),
-  curiosity: rover({ name: 'curiosity', activeCameras: camSet2 }),
-};
+const activeRovers = require('./rovers.service');
 
 const roversRouter = express.Router();
 
 roversRouter.route('/')
   .get(async (req, res) => {
-    const requestedRover = rovers[res.locals.roverId];
+    const requestedRover = activeRovers[res.locals.roverId];
     console.log(requestedRover);
-    res.end();
+    const roverInfo = await requestedRover.fetchInfo();
+    console.log(roverInfo);
+    res.send(roverInfo);
+  });
+
+roversRouter.route('/photos')
+  .get(async (req, res) => {
+    const requestedRover = activeRovers[res.locals.roverId];
+    console.log(requestedRover);
+    const roverPhotos = await requestedRover.fetchPhotos({ sol: 0 });
+    console.log(roverPhotos);
+    res.send(roverPhotos);
   });
 
 module.exports = roversRouter;

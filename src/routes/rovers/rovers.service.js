@@ -1,19 +1,7 @@
 const fetchNASA = require('../../utils/fetchNASA');
 const { InactiveCameraError, PropertiesError } = require('../../utils/customErrors');
 
-const cameras = {
-  fhaz: false,
-  rhaz: false,
-  mast: false,
-  chemcam: false,
-  mahli: false,
-  mardi: false,
-  navcam: false,
-  pancam: false,
-  minites: false,
-};
-
-const rover = ({ name = '', activeCameras = cameras } = {}) => ({
+const rover = ({ name = '', activeCameras = [] } = {}) => ({
   name,
   activeCameras,
   fetchInfo() {
@@ -25,20 +13,20 @@ const rover = ({ name = '', activeCameras = cameras } = {}) => ({
   },
   fetchPhotos({
     sol = null, earth_date = null, camera = null, page = 1,
-  }) {
+  } = {}) {
     try {
-      if (this.activeCameras[camera] === false) {
+      if (camera !== null && !this.activeCameras.includes(camera)) {
         throw new InactiveCameraError(camera, 'Invalid camera for this rover.');
       }
       if (sol === null && earth_date === null) {
         throw new PropertiesError(['sol', 'earth_date'], 'Missing required sol or earth_date value.');
       }
-
+      console.log(sol);
       const queries = [];
       if (camera) queries.push(`camera=${camera}`);
       if (page) queries.push(`page=${page}`);
 
-      if (sol) {
+      if (sol !== null) {
         const solRegex = /^\d+$/;
         if (!solRegex.test(sol)) {
           throw new PropertiesError(['sol'], 'Invalid sol format.');
@@ -48,7 +36,7 @@ const rover = ({ name = '', activeCameras = cameras } = {}) => ({
         }
       }
 
-      if (earth_date) {
+      if (earth_date !== null) {
         const dateRegex = /^20\d{1,2}-(0{0,1}[1-9]|1[1-2])-([0-2]{0,1}\d|3[0-1])$/;
         if (!dateRegex.test(earth_date)) {
           throw new PropertiesError(['earth_date'], 'Invalid date format.');
@@ -65,4 +53,16 @@ const rover = ({ name = '', activeCameras = cameras } = {}) => ({
   },
 });
 
-module.exports = rover;
+// Set of active cameras for all rovers
+const camSetCommon = ['fhaz', 'rhaz', 'navcam'];
+// Opportunity and Spirit share camera set, Curiosity has another set
+const camSet1 = [...camSetCommon, 'pancam', 'minites'];
+const camSet2 = [...camSetCommon, 'mast', 'chemcam', 'mahli', 'mardi'];
+
+const activeRovers = {
+  opportunity: rover({ name: 'opportunity', activeCameras: camSet1 }),
+  spirit: rover({ name: 'spirit', activeCameras: camSet1 }),
+  curiosity: rover({ name: 'curiosity', activeCameras: camSet2 }),
+};
+
+module.exports = activeRovers;
