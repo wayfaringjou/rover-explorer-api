@@ -36,13 +36,13 @@ app.use((_req, res) => {
 
 app.use((error, _req, res, _next) => {
   let response;
-  if (NODE_ENV === 'production') {
+  if (NODE_ENV === 'production' || NODE_ENV === 'test') {
     response = { error: error.message };
   } else {
     console.error(error);
     response = { error: error.message, object: error };
   }
-  res.status(500).json(response);
+  res.status(error?.status ?? 500).json(response);
 });
 
 module.exports = app;

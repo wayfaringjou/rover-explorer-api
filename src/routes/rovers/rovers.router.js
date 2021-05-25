@@ -1,13 +1,27 @@
 const express = require('express');
 const activeRovers = require('./rovers.service');
+const { HttpError } = require('../../utils/customErrors');
 
 const roversRouter = express.Router();
-// TODO pass errors correctly to error handling middleware
+
+roversRouter.use((req, res, next) => {
+  try {
+    if (!(res.locals.roverId in activeRovers)) {
+      throw new HttpError(400, 'Invalid Rover Name.');
+    } else {
+      res.locals.requestedRover = activeRovers[res.locals.roverId];
+    }
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
+
 roversRouter.route('/')
   .get(async (_req, res, next) => {
-    const requestedRover = activeRovers[res.locals.roverId];
     try {
-      const roverInfo = await requestedRover.fetchInfo();
+      const roverInfo = await res.locals.requestedRover.fetchInfo();
+      if (roverInfo instanceof Error) throw roverInfo;
       res.send(roverInfo);
     } catch (error) {
       next(error);
@@ -16,10 +30,10 @@ roversRouter.route('/')
 
 roversRouter.route('/photos')
   .get(async (req, res, next) => {
-    const requestedRover = activeRovers[res.locals.roverId];
     try {
       const { query } = req;
-      const roverPhotos = await requestedRover.fetchPhotos(query);
+      const roverPhotos = await res.locals.requestedRover.fetchPhotos(query);
+      if (roverPhotos instanceof Error) throw roverPhotos;
       res.send(roverPhotos);
     } catch (error) {
       next(error);

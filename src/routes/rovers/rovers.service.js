@@ -16,12 +16,12 @@ const rover = ({ name = '', activeCameras = [] } = {}) => ({
   } = {}) {
     try {
       if (camera !== null && !this.activeCameras.includes(camera)) {
-        throw new InactiveCameraError(camera, 'Invalid camera for this rover.');
+        throw new InactiveCameraError(camera, 400, 'Invalid camera for this rover.');
       }
       if (sol === null && earth_date === null) {
-        throw new PropertiesError(['sol', 'earth_date'], 'Missing required sol or earth_date value.');
+        throw new PropertiesError(['sol', 'earth_date'], 400, 'Missing required sol or earth_date value.');
       }
-      console.log(sol);
+
       const queries = [];
       if (camera) queries.push(`camera=${camera}`);
       if (page) queries.push(`page=${page}`);
@@ -29,7 +29,7 @@ const rover = ({ name = '', activeCameras = [] } = {}) => ({
       if (sol !== null) {
         const solRegex = /^\d+$/;
         if (!solRegex.test(sol)) {
-          throw new PropertiesError(['sol'], 'Invalid sol format.');
+          throw new PropertiesError(['sol'], 400, 'Invalid sol format. Must be a number starting from 0.');
         } else {
           queries.push(`sol=${sol}`);
           return fetchNASA(`${this.name}/photos`, queries);
@@ -39,7 +39,7 @@ const rover = ({ name = '', activeCameras = [] } = {}) => ({
       if (earth_date !== null) {
         const dateRegex = /^20\d{1,2}-(0{0,1}[1-9]|1[1-2])-([0-2]{0,1}\d|3[0-1])$/;
         if (!dateRegex.test(earth_date)) {
-          throw new PropertiesError(['earth_date'], 'Invalid date format.');
+          throw new PropertiesError(['earth_date'], 400, 'Invalid date format. Must be YYYY-MM-DD or YYYY-M-D. (Year must be higher than 2000).');
         } else {
           queries.push(`earth_date=${earth_date}`);
           return fetchNASA(`${this.name}/photos`, queries);

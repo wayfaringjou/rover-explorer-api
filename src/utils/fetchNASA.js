@@ -1,8 +1,7 @@
 const fetch = require('node-fetch');
 const { NASA_TOKEN, NASA_ENDPOINT } = require('../../config');
 
-// Setting a default query of 'sol=0' to avoid empty returns
-const fetchNASA = async (path = '', query = ['sol=0']) => {
+const fetchNASA = async (path = '', query = []) => {
   const parsedQuery = query.join('&');
   const token = `${query.length > 0 ? '&' : ''}api_key=${NASA_TOKEN}`;
   let payload;
