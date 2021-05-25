@@ -1,5 +1,5 @@
 /* eslint-disable max-classes-per-file */
-
+// TODO add http status to pass to error handler
 // For camera queries that are inactive for a rover
 class InactiveCameraError extends Error {
   constructor(inactiveCamera = '', ...params) {

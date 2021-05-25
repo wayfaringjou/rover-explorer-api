@@ -2,23 +2,28 @@ const express = require('express');
 const activeRovers = require('./rovers.service');
 
 const roversRouter = express.Router();
-
+// TODO pass errors correctly to error handling middleware
 roversRouter.route('/')
-  .get(async (req, res) => {
+  .get(async (_req, res, next) => {
     const requestedRover = activeRovers[res.locals.roverId];
-    console.log(requestedRover);
-    const roverInfo = await requestedRover.fetchInfo();
-    console.log(roverInfo);
-    res.send(roverInfo);
+    try {
+      const roverInfo = await requestedRover.fetchInfo();
+      res.send(roverInfo);
+    } catch (error) {
+      next(error);
+    }
   });
 
 roversRouter.route('/photos')
-  .get(async (req, res) => {
+  .get(async (req, res, next) => {
     const requestedRover = activeRovers[res.locals.roverId];
-    console.log(requestedRover);
-    const roverPhotos = await requestedRover.fetchPhotos({ sol: 0 });
-    console.log(roverPhotos);
-    res.send(roverPhotos);
+    try {
+      const { query } = req;
+      const roverPhotos = await requestedRover.fetchPhotos(query);
+      res.send(roverPhotos);
+    } catch (error) {
+      next(error);
+    }
   });
 
 module.exports = roversRouter;

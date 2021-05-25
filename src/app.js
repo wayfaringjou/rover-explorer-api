@@ -25,16 +25,16 @@ app.all('/', (req, res) => {
   res.send('Hello Explorer!');
 });
 
-app.use('/api/rovers/:roverId', (req, res, _next) => {
+app.use('/api/rovers/:roverId', (req, res, next) => {
   res.locals.roverId = req.params.roverId;
-  _next();
+  next();
 }, roversRouter);
 
-app.use((req, res, _next) => {
+app.use((_req, res) => {
   res.status(404).send('Not Found');
 });
 
-app.use((error, req, res, _next) => {
+app.use((error, _req, res, _next) => {
   let response;
   if (NODE_ENV === 'production') {
     response = { error: error.message };

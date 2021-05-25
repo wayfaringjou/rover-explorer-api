@@ -8,7 +8,6 @@ const fetchNASA = async (path = '', query = ['sol=0']) => {
   let payload;
 
   try {
-    console.log(`${NASA_ENDPOINT}/${path}?${parsedQuery}${token}`);
     payload = await fetch(`${NASA_ENDPOINT}/${path}?${parsedQuery}${token}`, {
       method: 'GET',
       headers: { 'Content-type': 'application/json; charset=utf-8' },
