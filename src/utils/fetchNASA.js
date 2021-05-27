@@ -1,5 +1,5 @@
 const fetch = require('node-fetch');
-const { NASA_TOKEN, NASA_ENDPOINT } = require('../../config');
+const { NASA_TOKEN, NASA_BASEPATH } = require('../../config');
 
 const fetchNASA = async (path = '', query = []) => {
   const parsedQuery = query.join('&');
@@ -7,7 +7,7 @@ const fetchNASA = async (path = '', query = []) => {
   let payload;
 
   try {
-    payload = await fetch(`${NASA_ENDPOINT}/${path}?${parsedQuery}${token}`, {
+    payload = await fetch(`${NASA_BASEPATH}${path}?${parsedQuery}${token}`, {
       method: 'GET',
       headers: { 'Content-type': 'application/json; charset=utf-8' },
     });

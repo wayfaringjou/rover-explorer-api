@@ -28,6 +28,17 @@ roversRouter.route('/')
     }
   });
 
+roversRouter.route('/manifest')
+  .get(async (_req, res, next) => {
+    try {
+      const roverInfo = await res.locals.requestedRover.fetchManifest();
+      if (roverInfo instanceof Error) throw roverInfo;
+      res.send(roverInfo);
+    } catch (error) {
+      next(error);
+    }
+  });
+
 roversRouter.route('/photos')
   .get(async (req, res, next) => {
     try {

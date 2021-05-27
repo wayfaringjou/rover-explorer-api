@@ -6,7 +6,14 @@ const rover = ({ name = '', activeCameras = [] } = {}) => ({
   activeCameras,
   fetchInfo() {
     try {
-      return fetchNASA(`${this.name}`, []);
+      return fetchNASA(`/rovers/${this.name}`, []);
+    } catch (error) {
+      return error;
+    }
+  },
+  fetchManifest() {
+    try {
+      return fetchNASA(`/manifests/${this.name}`, []);
     } catch (error) {
       return error;
     }
@@ -32,7 +39,7 @@ const rover = ({ name = '', activeCameras = [] } = {}) => ({
           throw new PropertiesError(['sol'], 400, 'Invalid sol format. Must be a number starting from 0.');
         } else {
           queries.push(`sol=${sol}`);
-          return fetchNASA(`${this.name}/photos`, queries);
+          return fetchNASA(`/rovers/${this.name}/photos`, queries);
         }
       }
 
@@ -42,11 +49,11 @@ const rover = ({ name = '', activeCameras = [] } = {}) => ({
           throw new PropertiesError(['earth_date'], 400, 'Invalid date format. Must be YYYY-MM-DD or YYYY-M-D. (Year must be higher than 2000).');
         } else {
           queries.push(`earth_date=${earth_date}`);
-          return fetchNASA(`${this.name}/photos`, queries);
+          return fetchNASA(`/rovers/${this.name}/photos`, queries);
         }
       }
 
-      return fetchNASA(`${this.name}/photos`, queries);
+      return fetchNASA(`/rovers${this.name}/photos`, queries);
     } catch (error) {
       return error;
     }
@@ -62,21 +69,24 @@ const camSet2 = [...camSetCommon, 'mast', 'chemcam', 'mahli', 'mardi'];
 
 // Perseverance has a different set of cameras
 const camSet3 = [
-  'EDL_RUCAM',
-  'EDL_DDCAM',
-  'EDL_PUCAM1',
-  'EDL_PUCAM2',
-  'NAVCAM_LEFT',
-  'NAVCAM_RIGHT',
-  'MCZ_RIGHT',
-  'MCZ_LEFT',
-  'FRONT_HAZCAM_LEFT_A',
-  'FRONT_HAZCAM_RIGHT_A',
-  'REAR_HAZCAM_LEFT',
-  'REAR_HAZCAM_RIGHT',
-  'EDL_RDCAM',
-  'SKYCAM',
-  'SHERLOC_WATSON'];
+  'edl_rucam',
+  'edl_ddcam',
+  'edl_pucam1',
+  'edl_pucam2',
+  'navcam_left',
+  'navcam_right',
+  'mcz_right',
+  'mcz_left',
+  'front_hazcam_left_a',
+  'front_hazcam_right_a',
+  'rear_hazcam_left',
+  'rear_hazcam_right',
+  'edl_rdcam',
+  'skycam',
+  'sherloc_watson',
+  'supercam_rmi',
+  'lcam',
+];
 
 const activeRovers = {
   opportunity: rover({ name: 'opportunity', activeCameras: camSet1 }),
@@ -84,5 +94,4 @@ const activeRovers = {
   curiosity: rover({ name: 'curiosity', activeCameras: camSet2 }),
   perseverance: rover({ name: 'perseverance', activeCameras: camSet3 }),
 };
-
 module.exports = activeRovers;
