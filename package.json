@@ -26,6 +26,9 @@
     "opportunity",
     "spirit"
   ],
+  "engines": {
+    "node": "15.2.1"
+  },
   "author": "Joel Del Cueto",
   "license": "ISC",
   "bugs": {

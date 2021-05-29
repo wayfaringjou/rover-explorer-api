@@ -37,7 +37,9 @@ app.use((_req, res) => {
 app.use((error, _req, res, _next) => {
   let response;
   if (NODE_ENV === 'production' || NODE_ENV === 'test') {
-    response = { error: error.message };
+    console.error(error);
+    console.error(...error);
+    response = { error: error.message, object: error };
   } else {
     console.error(error);
     response = { error: error.message, object: error };
