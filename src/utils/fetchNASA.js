@@ -13,6 +13,8 @@ const fetchNASA = async (path = '', query = []) => {
     });
 
     if (payload?.status !== 200) {
+      console.log(payload);
+      console.log(await payload.json);
       throw new Error({ status: payload?.status, error: payload?.error });
     }
 
