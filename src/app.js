@@ -38,9 +38,9 @@ app.use((error, _req, res, _next) => {
   let response;
   if (NODE_ENV === 'production' || NODE_ENV === 'test') {
     console.error(error);
-    console.error(...Object.values(error));
-    console.error(Object.keys(error));
-    response = { error: error.message, object: error };
+    console.error(...Object.values(error.message));
+    console.error(Object.keys(error.message));
+    response = { error: error.message?.message, object: error };
   } else {
     console.error(error);
     response = { error: error.message, object: error };
